@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Scholarship Pool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 95vw;
+      overflow-x: auto;
+    }
+    h2 {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,123,255,0.12);
+    }
+    thead {
+      background-color: #007bff;
+      color: white;
+    }
+    thead th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    tbody td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #eee;
+      font-size: 0.95rem;
+      color: #444;
+      vertical-align: middle;
+    }
+    tbody tr:hover {
+      background-color: #f1f8ff;
+    }
+    button.approve {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      font-size: 0.9rem;
+      background-color: #28a745;
+      box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+      transition: background-color 0.3s ease;
+    }
+    button.approve:hover {
+      background-color: #19692c;
+    }
+    #adminMessage {
+      margin: 1rem 0;
+      font-weight: 600;
+      min-height: 1.2em;
+      color: red;
+    }
+    button#adminLogoutBtn {
+      margin-top: 1.5rem;
+      background: #dc3545;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 6px 16px rgba(220,53,69,0.3);
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+    }
+    button#adminLogoutBtn:hover {
+      background: #a71d2a;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="application/javascript"></script>
+</head>
+<body>
+  <header>
+    <h1>Scholarship Pool</h1>
+    <nav>
+      <a href="admin-dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="user-login.html">User Login</a>
+      <a href="admin-login.html">Admin Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Manage Scholarship Applications</h2>
+    <p id="adminMessage"></p>
+    <table id="applicationsTable" aria-label="Scholarship applications">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>University</th>
+          <th>Course</th>
+          <th>Achievement</th>
+          <th>Graduation Date</th>
+          <th>Wallet</th>
+          <th>Amount (ETH)</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filled dynamically -->
+      </tbody>
+    </table>
+
+    <button id="adminLogoutBtn">Logout</button>
+        <button id="loginBtn">Connect MetaMask</button>
+
+  </main>
+
+  <footer>
+    &copy; 2025 Scholarship Pool. All rights reserved.
+  </footer>
+
+<script>
+      const CONTRACT_ADDRESS = '0xe3D13c05C2aA9f85F25Ec721cCf60B22CC772db2'; // Your contract address
+  const CONTRACT_ABI = [
+  // Only the getRequest part needed for this call
+        {
+            "name": "getRequest",
+            "type": "function",
+            "inputs": [
+            { "name": "_id", "type": "uint256", "internalType": "uint256" }
+            ],
+            "outputs": [
+            { "name": "id", "type": "uint256", "internalType": "uint256" },
+            { "name": "student", "type": "address", "internalType": "address" },
+            { "name": "amount", "type": "uint256", "internalType": "uint256" },
+            { "name": "reason", "type": "string", "internalType": "string" },
+            { "name": "createdAt", "type": "uint256", "internalType": "uint256" },
+            { "name": "approved", "type": "bool", "internalType": "bool" },
+            { "name": "approvedAt", "type": "uint256", "internalType": "uint256" },
+            { "name": "approvedBy", "type": "address", "internalType": "address" }
+            ],
+            "stateMutability": "view"
+        }
+    ];
+  const RPC_URL='https://testnet.sapphire.oasis.io'; 
+  
+
+  let provider, contract;
+  const adminMessage = document.getElementById('adminMessage');
+  const tableBody = document.querySelector('#applicationsTable tbody');
+  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+
+
+  
+    async function getRequestById(requestId) {
+        if (!window.ethereum) {
+            alert('MetaMask not detected.');
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+
+        try {
+            const request = await contract.getRequest(requestId);
+            console.log('Request:', request);
+            // You can now display request info in your admin dashboard
+        } catch (err) {
+            console.error('Error fetching request:', err);
+        }
+    }
+    const loginBtn = document.getElementById('loginBtn');
+    const message = document.getElementById('message');
+
+    loginBtn.onclick = async () => {
+      
+      if (!window.ethereum) {
+        
+        return;
+      }
+
+      try {
+        // Request account access
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const wallet = accounts[0];
+
+        await getRequestById(2); // Example request ID
+      } catch (err) {
+        return
+      }
+    };
+
+
+//   function parseReason(reasonStr) {
+//     const parts = reasonStr.split(',').map(p => p.trim());
+//     const data = {};
+//     parts.forEach(part => {
+//       const [key, ...vals] = part.split(':');
+//       if (key && vals.length) {
+//         data[key.trim()] = vals.join(':').trim();
+//       }
+//     });
+//     return data;
+//   }
+
+//   async function fetchApplicationsFromContract() {
+//     adminMessage.style.color = 'black';
+//     adminMessage.textContent = 'Loading applications from blockchain...';
+
+//     try {
+//       if (!contract) {
+//         await initContract();
+//       }
+
+//       const requestIdsBN = await contract.getRequestIds();
+//       const requestIds = requestIdsBN.map(idBN => idBN.toNumber());
+
+//       if (requestIds.length === 0) {
+//         tableBody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No applications found.</td></tr>';
+//         adminMessage.textContent = '';
+//         return;
+//       }
+
+//       tableBody.innerHTML = '';
+
+//       for (const id of requestIds) {
+//         const request = await contract.getRequest(id);
+
+//         const reasonData = parseReason(request.reason);
+//         const status = request.approved ? 'Approved' : 'Pending';
+
+//         const tr = document.createElement('tr');
+//         tr.innerHTML = `
+//           <td>${request.id.toString()}</td>
+//           <td>${reasonData.Name || ''}</td>
+//           <td>${reasonData.University || ''}</td>
+//           <td>${reasonData.Course || ''}</td>
+//           <td>${reasonData.Achievement || ''}</td>
+//           <td>${reasonData.Graduation || ''}</td>
+//           <td style="word-break: break-all;">${request.student}</td>
+//           <td>${ethers.utils.formatEther(request.amount)}</td>
+//           <td>${status}</td>
+//           <td>${!request.approved ? `<button class="approve" data-id="${request.id}" data-amount="${request.amount}">Approve</button>` : '-'}</td>
+//         `;
+//         tableBody.appendChild(tr);
+//       }
+
+//       document.querySelectorAll('button.approve').forEach(btn => {
+//         btn.addEventListener('click', async () => {
+//           const id = btn.dataset.id;
+//           const amount = btn.dataset.amount;
+//           adminMessage.style.color = 'black';
+//           adminMessage.textContent = `Sending approval request for ID #${id}...`;
+
+//           try {
+//             const response = await fetch('/api/approve-request', {
+//               method: 'POST',
+//               headers: {'Content-Type': 'application/json'},
+//               body: JSON.stringify({ id, amount })
+//             });
+//             const result = await response.json();
+//             if (response.ok) {
+//               adminMessage.style.color = 'green';
+//               adminMessage.textContent = `Request #${id} approved successfully.`;
+//               await fetchApplicationsFromContract();
+//             } else {
+//               throw new Error(result.error || 'Approval failed');
+//             }
+//           } catch (err) {
+//             adminMessage.style.color = 'red';
+//             adminMessage.textContent = `Error approving request: ${err.message}`;
+//           }
+//         });
+//       });
+
+//       adminMessage.textContent = '';
+//     } catch (err) {
+//       adminMessage.style.color = 'red';
+//       adminMessage.textContent = 'Error loading applications: ' + err.message;
+//       console.error(err);
+//     }
+//   }
+
+//   adminLogoutBtn.onclick = () => {
+//     alert('Logged out');
+//     window.location.href = 'index.html';
+//   };
+
+//   window.addEventListener('load', getRequestById(2));
+</script>
+
+</body>
+</html>
