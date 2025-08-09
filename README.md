@@ -1,25 +1,25 @@
 # devmatch2025
 
 ## Feature and Functionality
-### Support three main user roles and access control.
+1. Support three main user roles and access control.
 - User can fill out a form to apply a scholarship by filling their details and wallet address for receiving funds.
 - Donors can give money easily by connecting their MetaMask wallet and sending it straight into the system's donation pool.
 - Admin can log in securely to check all applications and decide whether to approve or reject them.
 
-### MetaMask Wallet Login
+2. MetaMask Wallet Login
 - Donor simply connect their MetaMask wallet, which makes sure that all donations come from genuine and verified accounts.
 
-### Donation Pool Smart Contract
+3. Donation Pool Smart Contract
 - Every donation and approval is recorded so nothing can be changed in secret, and anyone can see the total money available in the donation pool.
 
-### Donation via MetaMask
+4. Donation via MetaMask
 - All donation are processed on-chain via MetaMask with the smart contract holding funds transparently.
 
-### Admin Approval System
+5. Admin Approval System
 - Admin approval actions are linked to blockchain transactions.
 - It ensures verifiable and tamper-proof decision records.
 
-### Security Measures
+6. Security Measures
 - Password hashing, session-based authentication, and transaction verification before updates are committed.
 
 ## What makes Oasis Sapphire Different?
