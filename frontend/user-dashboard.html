@@ -1,0 +1,181 @@
+
+<script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
+<script src="blockchain.js"></script>
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Dashboard - Scholarship Pool</title>
+  <style>
+    /* Reset & base */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .dashboard-container {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 123, 255, 0.15);
+      max-width: 600px;
+      width: 90vw;
+      text-align: center;
+    }
+
+    #walletAddress {
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 1.5rem;
+      display: block;
+      font-size: 1.1rem;
+      word-break: break-all;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 0.8rem 1rem;
+      padding: 0.9rem 2.2rem;
+      font-size: 1.2rem;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 6px 16px rgba(0,123,255,0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      font-weight: 600;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+      box-shadow: 0 8px 20px rgba(0,86,179,0.5);
+    }
+    .btn.donate {
+      background-color: #28a745;
+      box-shadow: 0 6px 16px rgba(40,167,69,0.3);
+    }
+    .btn.donate:hover {
+      background-color: #19692c;
+      box-shadow: 0 8px 20px rgba(25,105,44,0.5);
+    }
+
+    button.logout {
+      margin-top: 2rem;
+      background: #dc3545;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 6px 16px rgba(220,53,69,0.3);
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+    }
+    button.logout:hover {
+      background: #a71d2a;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f8f9fa;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      box-shadow: inset 0 1px 0 #ddd;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Scholarship Pool</h1>
+    <nav>
+      <a href="user-dashboard.html">Dashboard</a>
+      <a href="apply.html">Apply</a>
+      <a href="donate.html">Donate</a>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="dashboard-container">
+      <h2>Welcome, User</h2>
+      <span>Your Wallet Address:</span>
+      <span id="walletAddress"></span>
+
+      <a href="apply.html" class="btn">Apply for Scholarship</a>
+      <a href="donate.html" class="btn donate">Donate to Scholarship</a>
+
+      <br />
+      <button class="logout" id="logoutBtn">Logout</button>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Scholarship Pool. All rights reserved.
+  </footer>
+
+  <script>
+    const walletSpan = document.getElementById('walletAddress');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const wallet = sessionStorage.getItem('wallet');
+    if (!wallet) {
+      alert('Please login first.');
+      window.location.href = 'user-login.html';
+    }
+    walletSpan.textContent = wallet;
+
+    logoutBtn.onclick = () => {
+      sessionStorage.removeItem('wallet');
+      window.location.href = 'index.html';
+    };
+  </script>
+</body>
+</html>
