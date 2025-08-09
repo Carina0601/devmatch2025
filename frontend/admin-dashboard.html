@@ -163,9 +163,9 @@
   </footer>
 
 <script>
-      const CONTRACT_ADDRESS = '0xe3D13c05C2aA9f85F25Ec721cCf60B22CC772db2'; // Your contract address
+      const CONTRACT_ADDRESS = '0xe3D13c05C2aA9f85F25Ec721cCf60B22CC772db2'; 
   const CONTRACT_ABI = [
-  // Only the getRequest part needed for this call
+  
         {
             "name": "getRequest",
             "type": "function",
@@ -185,7 +185,7 @@
             "stateMutability": "view"
         }
     ];
-  const RPC_URL='https://testnet.sapphire.oasis.io'; 
+  const RPC_URL='https:testnet.sapphire.oasis.io'; 
   
 
   let provider, contract;
@@ -207,7 +207,7 @@
         try {
             const request = await contract.getRequest(requestId);
             console.log('Request:', request);
-            // You can now display request info in your admin dashboard
+            
         } catch (err) {
             console.error('Error fetching request:', err);
         }
@@ -223,11 +223,11 @@
       }
 
       try {
-        // Request account access
+        
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const wallet = accounts[0];
 
-        await getRequestById(2); // Example request ID
+        await getRequestById(2); 
       } catch (err) {
         return
       }
