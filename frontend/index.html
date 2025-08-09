@@ -1,0 +1,123 @@
+
+<script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
+<script src="blockchain.js"></script>
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scholarship Pool - Home</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .role-buttons {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 1.2rem 3rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      border: none;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+      box-shadow: 0 8px 26px rgba(0,86,179,0.5);
+    }
+
+    footer {
+      background-color: #f8f9fa;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      box-shadow: inset 0 1px 0 #ddd;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Scholarship Pool</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="user-login.html">User Login</a>
+      <a href="admin-login.html">Admin Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Welcome to Scholarship Pool</h2>
+    <p>Please select your role to continue:</p>
+    <div class="role-buttons">
+      <button class="btn" onclick="location.href='user-login.html'">Login as User</button>
+      <button class="btn" onclick="location.href='admin-login.html'">Login as Admin</button>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Scholarship Pool. All rights reserved.
+  </footer>
+</body>
+</html>
