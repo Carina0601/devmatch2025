@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apply for Scholarship - Scholarship Pool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    form.container {
+      background: white;
+      max-width: 600px;
+      width: 90vw;
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,123,255,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: #333;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    label {
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #555;
+    }
+    input, textarea {
+      margin-top: 0.3rem;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    input[type="date"] {
+      max-width: 220px;
+    }
+    textarea {
+      min-height: 100px;
+    }
+
+    button.submit-btn {
+      margin-top: 2.2rem;
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,123,255,0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      font-weight: 700;
+    }
+    button.submit-btn:hover {
+      background-color: #0056b3;
+      box-shadow: 0 8px 20px rgba(0,86,179,0.5);
+    }
+
+    #statusMsg {
+      margin-top: 1.5rem;
+      font-weight: 700;
+      min-height: 1.3em;
+      color: red;
+      text-align: center;
+    }
+
+    .back-link {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .back-link a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background-color: #f8f9fa;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      box-shadow: inset 0 1px 0 #ddd;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Scholarship Pool</h1>
+    <nav>
+      <a href="user-dashboard.html">Dashboard</a>
+      <a href="apply.html">Apply</a>
+      <a href="donate.html">Donate</a>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main>
+    <form class="container" id="applyForm">
+  <h1>Apply for Scholarship</h1>
+  
+  <label for="fullName">Full Name *</label>
+  <input type="text" id="fullName" name="fullName" required />
+
+  <label for="universityName">University Name *</label>
+  <input type="text" id="universityName" name="universityName" required />
+
+  <label for="courseName">Course Name *</label>
+  <input type="text" id="courseName" name="courseName" required />
+
+  <label for="achievement">Achievement *</label>
+  <textarea id="achievement" name="achievement" required placeholder="Describe your academic or extracurricular achievements"></textarea>
+
+  <label for="gradDate">Expected Graduation Date *</label>
+  <input type="date" id="gradDate" name="gradDate" required />
+
+  <button type="submit" class="submit-btn">Submit Application</button>
+
+  <p id="statusMsg"></p>
+  <div class="back-link"><a href="user-dashboard.html">&larr; Back to Dashboard</a></div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.6.9/dist/ethers.umd.min.js" type="application/javascript"></script>
+<script>
+  window.addEventListener('load', async () => {
+    const form = document.getElementById('applyForm');
+    const statusMsg = document.getElementById('statusMsg');
+
+    // Replace with your deployed contract address
+    const CONTRACT_ADDRESS = '0xe3D13c05C2aA9f85F25Ec721cCf60B22CC772db2';
+
+    // ABI must include createRequest with only reason parameter
+    const CONTRACT_ABI = [
+      "function createRequest(string calldata _reason) external returns (uint256)"
+    ];
+
+    let contract;
+    let signer;
+
+    async function initContract() {
+      if (!window.ethereum) {
+        alert('MetaMask not detected. Please install MetaMask!');
+        throw new Error('MetaMask not installed');
+      }
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+      contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      statusMsg.style.color = 'black';
+      statusMsg.textContent = 'Preparing your transaction...';
+
+      const fullName = form.fullName.value.trim();
+      const universityName = form.universityName.value.trim();
+      const courseName = form.courseName.value.trim();
+      const achievement = form.achievement.value.trim();
+      const gradDate = form.gradDate.value;
+
+      if (!fullName || !universityName || !courseName || !achievement || !gradDate) {
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = 'Please fill all fields correctly.';
+        return;
+      }
+
+      // Compose the reason string with user details
+      const reason = `Name: ${fullName}, University: ${universityName}, Course: ${courseName}, Achievement: ${achievement}, Graduation: ${gradDate}`;
+
+      try {
+        if (!contract) {
+          await initContract();
+        }
+
+        statusMsg.textContent = 'Sending transaction to blockchain...';
+
+        // Call createRequest with reason; no ETH sent
+        const tx = await contract.createRequest(reason);
+
+        statusMsg.textContent = `Transaction sent. Waiting for confirmation... (tx hash: ${tx.hash})`;
+
+        await tx.wait();
+
+        statusMsg.style.color = 'green';
+        statusMsg.textContent = 'Application successfully submitted! Transaction confirmed.';
+        form.reset();
+      } catch (error) {
+        console.error(error);
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = error.data?.message || error.message || 'Transaction failed.';
+      }
+    });
+  });
+</script>
+</body>
+</html>
