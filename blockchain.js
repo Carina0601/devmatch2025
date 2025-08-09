@@ -1,5 +1,5 @@
-const contractAddress = '0x55fa2b4C7703Deb461352aaf9952000E1543167c'; // Replace with your deployed address
-let abi; // Will be loaded dynamically
+const contractAddress = '0x55fa2b4C7703Deb461352aaf9952000E1543167c'; 
+let abi; 
 
 let provider;
 let signer;
@@ -7,7 +7,7 @@ let contract;
 
 async function loadAbi() {
   if (!abi) {
-    const response = await fetch('path/to/your/abi.json'); // relative path to your ABI file
+    const response = await fetch('path/to/your/abi.json'); 
     if (!response.ok) {
       throw new Error('Failed to load ABI file');
     }
@@ -22,7 +22,7 @@ async function connectWallet() {
     await provider.send("eth_requestAccounts", []);
     signer = provider.getSigner();
 
-    await loadAbi(); // ensure ABI is loaded
+    await loadAbi(); 
     contract = new ethers.Contract(contractAddress, abi, signer);
 
     return await signer.getAddress();
