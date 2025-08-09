@@ -151,7 +151,7 @@
   </footer>
 
   <script>
-    // Example admin credentials hardcoded here (for demo only!)
+    
     const ADMIN_USERS = {
       "admin": "admin123",
       "superuser": "supersecret"
@@ -175,7 +175,6 @@
         return;
       }
 
-      // Frontend check against hardcoded credentials
       if (ADMIN_USERS[username] && ADMIN_USERS[username] === password) {
         loginStatus.style.color = 'green';
         loginStatus.textContent = 'Login successful! Redirecting...';
