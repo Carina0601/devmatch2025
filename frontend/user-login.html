@@ -1,0 +1,93 @@
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+<script src="blockchain.js"></script>
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Login - Scholarship Pool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh;
+    }
+    main {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 90vw;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+    button {
+      background: #28a745;
+      border: none;
+      color: white;
+      padding: 0.8rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgb(40 167 69 / 0.3);
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background: #19692c;
+    }
+    #message {
+      margin-top: 1rem;
+      font-weight: 600;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>User Login with MetaMask</h2>
+    <button id="loginBtn">Connect MetaMask</button>
+    <p id="message"></p>
+    <p><a href="index.html">Back to homepage</a></p>
+  </main>
+
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const message = document.getElementById('message');
+
+    loginBtn.onclick = async () => {
+      message.style.color = 'black';
+      message.textContent = 'Checking MetaMask...';
+
+      if (!window.ethereum) {
+        message.style.color = 'red';
+        message.textContent = 'MetaMask is not installed. Please install it to continue.';
+        return;
+      }
+
+      try {
+        // Request account access
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const wallet = accounts[0];
+        sessionStorage.setItem('wallet', wallet);
+
+        message.style.color = 'green';
+        message.textContent = `Connected wallet: ${wallet}`;
+        setTimeout(() => {
+          window.location.href = 'user-dashboard.html';
+        }, 1500);
+      } catch (err) {
+        message.style.color = 'red';
+        message.textContent = 'MetaMask login denied or failed.';
+      }
+    };
+  </script>
+</body>
+</html>
