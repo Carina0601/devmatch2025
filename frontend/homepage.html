@@ -1,0 +1,43 @@
+
+<script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
+<script src="blockchain.js"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scholarship Pool - Homepage</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; text-align: center; }
+    button {
+      padding: 1rem 2rem;
+      margin: 1rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 5px;
+      border: 1px solid #333;
+      background-color: #f0f0f0;
+      transition: background-color 0.3s ease;
+    }
+    button:hover { background-color: #ddd; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to the Scholarship Pool Platform</h1>
+  <p>Please select your role to log in:</p>
+  <button id="userLoginBtn">Login as User (MetaMask)</button>
+  <button id="adminLoginBtn">Login as Admin (Username & Password)</button>
+
+  <script>
+    document.getElementById('userLoginBtn').onclick = () => {
+      // Redirect to user login page (MetaMask)
+      window.location.href = 'user-login.html';
+    };
+
+    document.getElementById('adminLoginBtn').onclick = () => {
+      // Redirect to admin login page
+      window.location.href = 'admin-login.html';
+    };
+  </script>
+</body>
+</html>
