@@ -73,7 +73,8 @@
       }
 
       try {
-        // Request account access
+
+        
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const wallet = accounts[0];
         sessionStorage.setItem('wallet', wallet);
