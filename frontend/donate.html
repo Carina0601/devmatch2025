@@ -1,0 +1,214 @@
+<script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
+<script src="blockchain.js"></script>
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Donate - Scholarship Pool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    form.container {
+      background: white;
+      max-width: 400px;
+      width: 90vw;
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(40,167,69,0.15);
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-weight: 700;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.3rem;
+      text-align: left;
+    }
+    input[type=number] {
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 1.8rem;
+      font-family: inherit;
+    }
+
+    button.submit-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(40,167,69,0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      font-weight: 700;
+    }
+    button.submit-btn:hover {
+      background-color: #19692c;
+      box-shadow: 0 8px 20px rgba(25,105,44,0.5);
+    }
+
+    #statusMsg {
+      margin-top: 1.5rem;
+      font-weight: 700;
+      min-height: 1.3em;
+      color: red;
+      text-align: center;
+    }
+
+    .back-link {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .back-link a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background-color: #f8f9fa;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      box-shadow: inset 0 1px 0 #ddd;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Scholarship Pool</h1>
+    <nav>
+      <a href="user-dashboard.html">Dashboard</a>
+      <a href="apply.html">Apply</a>
+      <a href="donate.html">Donate</a>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main>
+    <form class="container" id="donateForm">
+      <h1>Donate to Scholarship Pool</h1>
+      <label for="donateAmount">Donation Amount (ETH) *</label>
+      <input type="number" id="donateAmount" name="donateAmount" min="0.01" step="0.01" required />
+      <button type="submit" class="submit-btn">Donate</button>
+
+      <p id="statusMsg"></p>
+      <div class="back-link"><a href="user-dashboard.html">&larr; Back to Dashboard</a></div>
+    </form>
+  </main>
+
+  <footer>
+    &copy; 2025 Scholarship Pool. All rights reserved.
+  </footer>
+
+  <script>
+    const wallet = sessionStorage.getItem('wallet');
+    const form = document.getElementById('donateForm');
+    const statusMsg = document.getElementById('statusMsg');
+
+    if (!wallet) {
+      alert('Please login first.');
+      window.location.href = 'user-login.html';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      statusMsg.style.color = 'black';
+      statusMsg.textContent = 'Processing donation...';
+
+      const amount = Number(form.donateAmount.value);
+
+      if (!amount || amount <= 0) {
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = 'Please enter a valid donation amount.';
+        return;
+      }
+
+      const payload = {
+        wallet,
+        amount
+      };
+
+      try {
+        const res = await fetch('/api/donate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) throw new Error('Donation failed.');
+
+        statusMsg.style.color = 'green';
+        statusMsg.textContent = 'Donation successful! Thank you.';
+        form.reset();
+      } catch (err) {
+        statusMsg.style.color = 'red';
+        statusMsg.textContent = err.message;
+      }
+    });
+  </script>
+</body>
+</html>
