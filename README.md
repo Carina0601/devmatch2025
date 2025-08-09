@@ -44,3 +44,9 @@ SDG - 16 Peace, Justice and Strong Institutions
 - Blockchain ensures transparency and accountability  in fund allocation
 - Every transaction is recorded on the blockchain and cannot be modified, deleted, or hidden. This prevents corruption and builds trust in the process.
 - Conflicts over fraud, favoritism, and fund distribution are less common in communities because of the system's fairness and transparency.
+
+## How to run the program?
+1. Download all the files in github.
+2. Install "Live Server" extension in VS code.
+3. Click on "Go Live" at  the bottom right while in the index.html page.
+4. Link Metamask wallet.
